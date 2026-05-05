@@ -36,6 +36,9 @@ use Illuminate\Support\Facades\Storage;
 
     if(!function_exists('supaUrl')) {
         function supaUrl($path, $disk = 'public') {
+            if (empty($path)) {
+                return null;
+            }
             if(config('app.supa_on')) {
                 return app(SupaGPTService::class)->url($path);
             }

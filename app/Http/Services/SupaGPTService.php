@@ -65,14 +65,19 @@ class SupaGPTService
     /**
      * Optionally: get a public URL from a stored path.
      *
-     * @param string $path
+     * @param string|null $path
      * @return string|null
      */
-    public function url(string $path): ?string
+    public function url(?string $path): ?string
     {
+        if (empty($path)) {
+            return null;
+        }
+
         try {
             if(config('app.supa_public')) {
-                return config('filesystems.disks.supabase.public_endpoint') .'/'. $path;
+                $base = (string) config('filesystems.disks.supabase.public_endpoint');
+                return rtrim($base, '/') . '/' . ltrim($path, '/');
             }
             return Storage::disk($this->disk)->url($path);
         } catch (\Throwable $e) {
