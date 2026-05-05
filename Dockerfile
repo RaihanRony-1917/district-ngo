@@ -33,7 +33,7 @@ RUN ls -l /app/public
 
 
 # Stage 2 - PHP backend (Laravel + Supabase)
-FROM php:8.2-fpm AS backend
+FROM php:8.4-fpm AS backend
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -58,7 +58,7 @@ COPY --from=frontend /app/public/build ./public/build
 RUN composer install --no-dev --optimize-autoloader
 
 RUN ls -l /var/www/html/public/build
-RUN php artisan storage:link
+RUN if [ -e public/storage ]; then echo "public/storage already exists"; else php artisan storage:link; fi
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data storage bootstrap/cache
 
